@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #eef2f3;
+            margin: 0;
+        }
+        header, footer {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 20px;
+        }
+        .container {
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            width: 50%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        .weather-info {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <header>Weather App</header>
+    
+    <div class="container">
+        <h2>Check the Weather</h2>
+        <input type="text" id="location" placeholder="Enter Location" />
+        <button onclick="getWeather()">Get Weather</button>
+        <div class="weather-info" id="weather-result"></div>
+    </div>
+    
+    <footer>&copy; 2025 Weather App | All Rights Reserved</footer>
+
+    <script>
+        async function getWeather() {
+            const location = document.getElementById('location').value;
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+            const apiKey = '52a3335680494d8c8b9125854252903';
+            const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${location}&aqi=yes`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                if (data.error) {
+                    document.getElementById('weather-result').innerText = 'Location not found';
+                } else {
+                    document.getElementById('weather-result').innerHTML = `
+                        <p><strong>Location:</strong> ${data.location.name}, ${data.location.region}, ${data.location.country}</p>
+                        <p><strong>Temperature:</strong> ${data.current.temp_c}°C</p>
+                        <p><strong>Condition:</strong> ${data.current.condition.text}</p>
+                        <p><strong>Humidity:</strong> ${data.current.humidity}%</p>
+                        <p><strong>Wind Speed:</strong> ${data.current.wind_kph} kph</p>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('weather-result').innerText = 'Error fetching data';
+            }
+        }
+    </script>
+</body>
+</html>
